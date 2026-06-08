@@ -76,7 +76,7 @@ GitHub requires a token instead of your password for git operations. You only se
 4. Click **Generate new token** → **Generate new token (classic)**
 5. Give it a name (e.g. "my laptop")
 6. Set expiration to **No expiration** (or 90 days if you prefer)
-7. Check the **repo** checkbox under scopes
+7. Check the **repo** checkbox under scopes and all admin access
 8. Click **Generate token** at the bottom
 9. **Copy the token now — you won't be able to see it again**
 
