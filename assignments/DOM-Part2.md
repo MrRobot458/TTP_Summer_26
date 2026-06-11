@@ -272,22 +272,20 @@ A form has default browser behavior: when you submit it, the browser tries to re
 
 ```js
 movieForm.addEventListener("submit", (event) => {
-  // 1. Stop the browser from reloading the page
-  //    Without this line, the page refreshes on every submit and you lose everything
-  event.preventDefault()
+  // 1. Stop the browser from reloading the page — this must be the very first line
+  //    Without this, the page refreshes on every submit and you lose everything
+  //    hint: event.preventDefault()
 
   // 2. Read the movie title from the input — use .value, not getAttribute
-  const title = titleInput.value
+  //    hint: titleInput.value reads the live value the user typed
 
   // 3. Read the genre the same way
-  const genre = genreInput.value
 
   // 4. Log both values to the console
   //    Type a title and genre, submit — confirm you see them in DevTools
 
   // 5. At the end, reset the form so the inputs are blank for the next entry
-  movieForm.reset()
-  //    .reset() clears all inputs in the form at once — no need to blank them one by one
+  //    hint: movieForm.reset() clears all inputs in the form at once
 
   // 6. Don't build cards yet — that's Phase 4
 })
@@ -472,56 +470,38 @@ Now write two small functions. Keeping them separate makes each one easier to re
 
 **Function 1 — update which filter button looks active:**
 
+This runs every time the filter changes. Its only job is visual: make the active button look selected and reset all the others. It has no idea what cards exist — that's Function 2's job.
+
 ```js
 function updateFilterButtons(activeFilter) {
-  // Loop over all filter buttons
-  // On each one:
-  //   - remove "active-filter"
-  //   - if the button's id ends with the active filter name, add "active-filter" back
-  //     hint: btn.id === "filter-" + activeFilter
-  filterBtns.forEach((btn) => {
-    btn.classList.remove("active-filter")
-    if (btn.id === "filter-" + activeFilter) {
-      btn.classList.add("active-filter")
-    }
-  })
+  // 1. Loop over filterBtns
+  // 2. On each button:
+  //    - first remove "active-filter" from every button
+  //    - then add it back only to the one whose id matches the active filter
+  //      hint: btn.id === "filter-" + activeFilter
 }
 ```
 
 **Function 2 — show or hide cards based on the filter:**
 
+This is the core of the filter feature. It runs whenever a filter button is clicked, and also after any add, remove, or watch toggle — so the view never gets out of sync. It never deletes cards; it just shows or hides them by toggling the `filtered-out` class.
+
 ```js
 function applyFilter(filter) {
-  // 1. Update the currentFilter variable
-  currentFilter = filter
+  // 1. Update the currentFilter variable so the rest of the app knows what's active
 
-  // 2. Update the button highlighting
-  updateFilterButtons(filter)
+  // 2. Update which button looks active
+  //    hint: call updateFilterButtons(filter)
 
-  // 3. Get all cards
-  const cards = movieList.querySelectorAll(".movie-card")
+  // 3. Get all cards in the list
+  //    hint: movieList.querySelectorAll(".movie-card")
 
-  // 4. Loop over each card and decide to show or hide it
-  cards.forEach((card) => {
-    if (filter === "all") {
-      // show every card
-      card.classList.remove("filtered-out")
-    } else if (filter === "watched") {
-      // show only watched cards; hide the rest
-      if (card.classList.contains("watched")) {
-        card.classList.remove("filtered-out")
-      } else {
-        card.classList.add("filtered-out")
-      }
-    } else if (filter === "unwatched") {
-      // show only unwatched cards; hide the rest
-      if (!card.classList.contains("watched")) {
-        card.classList.remove("filtered-out")
-      } else {
-        card.classList.add("filtered-out")
-      }
-    }
-  })
+  // 4. Loop over every card and decide: show it or hide it?
+  //    if filter === "all"       → show every card
+  //    if filter === "watched"   → show cards with .watched, hide the rest
+  //    if filter === "unwatched" → show cards without .watched, hide the rest
+  //    hint: card.classList.contains("watched") tells you the card's current state
+  //    hint: card.classList.add("filtered-out") hides it, .remove("filtered-out") shows it
 }
 ```
 
